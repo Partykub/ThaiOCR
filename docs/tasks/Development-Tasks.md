@@ -70,17 +70,37 @@ cd build-model-th && install_thai_ocr.bat
 ### 2. Generate Thai Text Dataset
 **Purpose**: Create synthetic Thai text data for training
 
-**Command**:
+**Commands**:
 ```bash
-python thai-letters/thai_text_generator.py
+# สร้าง Dataset ตัวอย่าง (500 ภาพ)
+python thai-letters/thai_text_generator.py -c thai-letters/thai_corpus.txt -n 500 -o thai-letters/generated_text_samples
+
+# สร้าง Dataset ครบชุด (9,672 ภาพ - เท่ากับจำนวนบรรทัดใน corpus)
+python thai-letters/thai_text_generator.py -c thai-letters/thai_corpus.txt -n 9672 -o thai-letters/full_corpus_dataset
+
+# รันสคริปต์อัตโนมัติ
+python thai-letters/create_all_datasets.py
+
+# หรือใช้ batch file (Windows)
+thai-letters/create_datasets.bat
 ```
+
+**Parameters**:
+- `-c, --corpus`: ไฟล์ corpus (default: thai_corpus.txt)
+- `-n, --num`: จำนวนภาพที่ต้องการ (default: 1000)  
+- `-o, --output`: โฟลเดอร์ output (default: ./dataset/)
 
 **When to use**:
 - Need more training data
 - Expanding vocabulary coverage
 - Creating specialized text samples
 
-**Output**: Generated text files in various Thai scripts and fonts
+**Output**: Image datasets with corresponding labels
+
+**Result**: 
+- Dataset ตัวอย่าง: 500 ภาพ
+- Dataset ครบชุด: 9,672 ภาพ  
+- รวมกับเดิม: 15,172 ภาพทั้งหมด
 
 ---
 

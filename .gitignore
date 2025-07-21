@@ -226,6 +226,7 @@ output/
 */dataset/
 */data/
 thai_ocr_dataset/images/
+full_corpus_dataset/
 */train/
 */test/
 */val/
