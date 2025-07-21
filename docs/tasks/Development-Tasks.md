@@ -29,10 +29,19 @@
 
 ---
 
-### 🚀 **Task 7: PaddleOCR Thai Model Training** (RECOMMENDED NEXT)
-**Status**: 📋 **PLANNED** - Ready to start
+### 🚀 **Task 7: PaddleOCR Thai Model Training** (IN PROGRESS)
+**Status**: � **ACTIVE** - Implementation Phase
 
 **Objective**: Create production-ready Thai OCR system using PaddleOCR's SOTA architecture
+
+**Current Environment** ✅:
+- 🎮 **Hardware**: RTX 5090 (24GB VRAM) ready
+- 🔥 **CUDA**: 12.6 compatible
+- 🐍 **PaddlePaddle**: v2.6.2 GPU version installed
+- 🔤 **PaddleOCR**: v3.1.0 Thai support
+- 🌐 **Environment**: tf_gpu_env virtual environment active
+- 📊 **Dataset**: 14,672 Thai images ready (5K + 9.6K)
+- 📝 **Dictionary**: 881 Thai characters (th_dict.txt)
 
 **Why Task 7 vs Task 5?**
 | Feature | Task 5 (CRNN) | Task 7 (PaddleOCR) |
@@ -44,60 +53,249 @@
 | **Use Case** | Learning/Research | Production deployment |
 | **RTX 5090** | ✅ Supported | ✅ Optimized |
 
-**Technical Scope**:
-1. **Text Detection Model**: DB++/PSE for finding text regions
-2. **Text Recognition Model**: SVTR/CRNN++ for reading text
-3. **End-to-End Pipeline**: Complete OCR system
-4. **Thai Language**: Specialized Thai language support
-5. **RTX 5090**: Optimized for maximum GPU performance
+## 📋 **Implementation Plan - 4 Phases**
 
-**Expected Deliverables**:
-- 🎯 **Production OCR**: Ready-to-use Thai OCR system
-- 📸 **Any Image Input**: No manual cropping required
-- 🎪 **High Accuracy**: 95-99% Thai text recognition
-- ⚡ **Fast Inference**: 10-50ms per image on RTX 5090
-- 🚀 **Web API**: REST API for OCR service
-- 📱 **Demo App**: GUI application for testing
+### **Phase 1: Environment & Dataset Preparation** 🔧
+**Timeline**: 1-2 hours | **Status**: 🔄 In Progress
 
-**Dataset Strategy**:
-- ✅ **Existing Dataset**: Use 15,000+ images already available
-- 🔄 **Data Augmentation**: PaddleOCR built-in augmentation
-- 📚 **Pre-trained Base**: Start from PaddleOCR Thai model
-- 🎯 **Fine-tuning**: Customize for specific use cases
+**Tasks**:
+- [x] ✅ RTX 5090 Environment Setup
+- [x] ✅ PaddlePaddle GPU Installation (v2.6.2)
+- [x] ✅ Dataset Analysis (14,672 images)
+- [ ] 🔄 **Build PaddlePaddle with SM_120 support**
+- [ ] 📝 **Create PaddleOCR dataset format converter**
+- [ ] 🎯 **Setup training/validation split (80:20)**
+- [ ] 📚 **Download pretrained models**
 
-**Training Pipeline**:
+**Key Files to Create**:
 ```bash
-# Phase 1: Setup
-pip install paddlepaddle-gpu paddleocr
-
-# Phase 2: Prepare data
-python src/data/prepare_paddle_dataset.py
-
-# Phase 3: Train detection model
-python src/training/train_paddle_detection.py
-
-# Phase 4: Train recognition model  
-python src/training/train_paddle_recognition.py
-
-# Phase 5: Export production model
-python src/utils/export_paddle_model.py
-
-# Phase 6: Deploy API
-python src/api/paddle_ocr_api.py
+src/data/prepare_paddle_dataset.py     # Dataset converter
+src/utils/build_paddle_sm120.py        # Custom build script
+configs/rec/thai_svtr_tiny.yml         # Recognition config
+configs/det/thai_db_mobilenet.yml      # Detection config (future)
 ```
 
-**RTX 5090 Optimizations**:
-- 🎮 **24GB VRAM**: Large batch sizes (32-64)
-- ⚡ **Mixed Precision**: FP16 training acceleration
-- 🔄 **Dynamic Memory**: Efficient memory allocation
-- 📊 **Multi-GPU**: Scale to multiple RTX 5090s if available
+**Commands**:
+```bash
+# Build PaddlePaddle with SM_120 support
+python src/utils/build_paddle_sm120.py
 
-**Success Criteria**:
-- [ ] **Detection**: 90%+ text region detection accuracy
-- [ ] **Recognition**: 95%+ character recognition accuracy
-- [ ] **Speed**: <50ms inference time on RTX 5090
-- [ ] **Integration**: Working API and demo application
-- [ ] **Documentation**: Complete usage and deployment guide
+# Prepare dataset
+python src/data/prepare_paddle_dataset.py \
+  --input_dir thai-letters/thai_ocr_dataset \
+  --output_dir ./paddle_dataset \
+  --split_ratio 0.8
+
+# Download pretrained models
+python src/utils/download_pretrained.py
+```
+
+### **Phase 2: Recognition Model Training** 🔤
+**Timeline**: 2-4 hours | **Status**: 📋 Planned
+
+**Focus**: Train SVTR/CRNN++ model for Thai character recognition
+
+**Tasks**:
+- [ ] 📝 **Configure SVTR_Tiny for Thai language**
+- [ ] 🎯 **Fine-tune from Chinese pretrained model**
+- [ ] 📊 **Optimize for RTX 5090 (batch_size=64)**
+- [ ] 🔄 **Training monitoring and checkpoints**
+- [ ] 🧪 **Model evaluation and validation**
+
+**Training Strategy**:
+- **Base Model**: PP-OCRv3_rec or PP-OCRv4_rec (Chinese)
+- **Architecture**: SVTR_Tiny (lightweight, fast)
+- **Batch Size**: 64 (RTX 5090 optimized)
+- **Epochs**: 50-100 with early stopping
+- **Learning Rate**: 0.0005 (fine-tuning)
+
+**Commands**:
+```bash
+# Start recognition training
+python tools/train.py -c configs/rec/thai_svtr_tiny.yml \
+  -o Global.pretrained_model=./pretrain_models/ch_PP-OCRv3_rec_train/
+
+# Monitor training
+python src/utils/monitor_training.py --config configs/rec/thai_svtr_tiny.yml
+
+# Evaluate model
+python tools/eval.py -c configs/rec/thai_svtr_tiny.yml \
+  -o Global.checkpoints=./output/rec_thai_svtr/best_accuracy
+```
+
+### **Phase 3: Model Export & Integration** 🚀
+**Timeline**: 1-2 hours | **Status**: 📋 Planned
+
+**Tasks**:
+- [ ] 📦 **Export inference model**
+- [ ] 🔗 **Create hybrid OCR system**
+- [ ] 🧪 **End-to-end testing**
+- [ ] ⚡ **Performance benchmarking**
+- [ ] 📊 **Accuracy evaluation**
+
+**Integration Strategy**:
+- **Primary**: PaddleOCR Thai recognition
+- **Fallback**: Existing CRNN for license plates
+- **Detection**: Use pretrained PP-OCRv3 detection
+- **API**: REST API with FastAPI
+
+**Commands**:
+```bash
+# Export inference model
+python tools/export_model.py -c configs/rec/thai_svtr_tiny.yml \
+  -o Global.pretrained_model=./output/rec_thai_svtr/best_accuracy \
+     Global.save_inference_dir=./inference/thai_rec/
+
+# Create hybrid system
+python src/integration/create_hybrid_ocr.py
+
+# Performance testing
+python src/testing/benchmark_thai_ocr.py
+```
+
+### **Phase 4: Production Deployment** 🌐
+**Timeline**: 2-3 hours | **Status**: 📋 Planned
+
+**Tasks**:
+- [ ] 🖥️ **Web API development**
+- [ ] 📱 **Demo application**
+- [ ] 📚 **Documentation**
+- [ ] 🐳 **Docker containerization**
+- [ ] 🔧 **Performance optimization**
+
+**Deployment Features**:
+- **API**: FastAPI with automatic docs
+- **Demo**: Streamlit web interface
+- **Performance**: <50ms inference on RTX 5090
+- **Formats**: Support multiple image formats
+- **Batch**: Batch processing capability
+
+**Commands**:
+```bash
+# Start API server
+python src/api/thai_ocr_api.py
+
+# Launch demo app
+streamlit run src/demo/thai_ocr_demo.py
+
+# Build Docker image
+docker build -t thai-ocr:latest .
+```
+
+## 🎯 **Success Criteria & Milestones**
+
+### **Phase 1 Success** ✅:
+- [ ] PaddlePaddle builds with SM_120 support
+- [ ] Dataset converted to PaddleOCR format
+- [ ] Pretrained models downloaded
+- [ ] Training environment configured
+
+### **Phase 2 Success** 🔤:
+- [ ] **Recognition Accuracy**: >90% on validation set
+- [ ] **Training Speed**: <3 minutes per epoch on RTX 5090
+- [ ] **Model Size**: <50MB for deployment
+- [ ] **Character Support**: 881 Thai characters
+
+### **Phase 3 Success** 🚀:
+- [ ] **Inference Speed**: <50ms per image
+- [ ] **Memory Usage**: <4GB GPU memory
+- [ ] **Integration**: Hybrid system working
+- [ ] **API Response**: <100ms per request
+
+### **Phase 4 Success** 🌐:
+- [ ] **Production API**: 99.9% uptime
+- [ ] **Demo Application**: User-friendly interface
+- [ ] **Documentation**: Complete user guide
+- [ ] **Performance**: Production-ready metrics
+
+## 🛠️ **Technical Implementation Details**
+
+### **Dataset Preparation**:
+```python
+# Dataset structure for PaddleOCR
+paddle_dataset/
+├── train_images/           # Training images
+├── val_images/            # Validation images  
+├── train_list.txt         # Image paths + labels
+├── val_list.txt           # Validation labels
+└── thai_dict.txt          # Character dictionary
+```
+
+### **Training Configuration**:
+```yaml
+# configs/rec/thai_svtr_tiny.yml
+Global:
+  use_gpu: true
+  character_dict_path: ./thai_dict.txt
+  character_type: thai
+  max_text_length: 25
+  
+Architecture:
+  model_type: rec
+  algorithm: SVTR_LCNet
+  
+Train:
+  dataset:
+    data_dir: ./paddle_dataset/
+    label_file_list: ["./paddle_dataset/train_list.txt"]
+  
+Optimizer:
+    lr: 0.0005
+    
+PostProcess:
+  name: CTCLabelDecode
+```
+
+### **RTX 5090 Optimizations**:
+```python
+# Optimal settings for RTX 5090
+train_batch_size: 64        # Max for 24GB VRAM
+eval_batch_size: 32         # Conservative for evaluation
+use_amp: true               # Mixed precision training
+use_gpu: true               # GPU mandatory
+save_epoch_step: 5          # Save every 5 epochs
+```
+
+## � **Expected Performance Metrics**
+
+### **Training Performance**:
+- **Epoch Time**: 2-3 minutes (RTX 5090)
+- **Total Training**: 2-4 hours (50-100 epochs)
+- **GPU Memory**: 16-20GB usage (24GB available)
+- **Convergence**: Epoch 20-40 typical
+
+### **Inference Performance**:
+- **Recognition Speed**: 10-30ms per image
+- **Detection Speed**: 20-50ms per image
+- **Total Pipeline**: 30-80ms per image
+- **Throughput**: 12-30 images/second
+
+### **Accuracy Targets**:
+- **Recognition**: 95-99% on clean text
+- **Detection**: 90-95% text region detection
+- **End-to-End**: 85-95% complete accuracy
+- **Thai Specific**: 90%+ Thai character accuracy
+
+## 🔧 **Troubleshooting & Fallbacks**
+
+### **Build Issues**:
+- **SM_120 Error**: Use precompiled wheels if build fails
+- **CUDA Issues**: Fallback to CUDA 11.8 if needed
+- **Memory**: Reduce batch size if OOM
+
+### **Training Issues**:
+- **Low Accuracy**: Increase training data or epochs
+- **Overfitting**: Add data augmentation
+- **Speed**: Optimize data loading pipeline
+
+### **Integration Issues**:
+- **API Errors**: Fallback to CRNN model
+- **Performance**: Use model quantization
+- **Memory**: Implement model caching
+
+---
+
+**Next Steps**: Start Phase 1 - Environment & Dataset Preparation
 
 ---
 
