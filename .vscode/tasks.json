@@ -47,6 +47,74 @@
 			}
 		},
 		{
+			"label": "Enforce GPU Training (MANDATORY)",
+			"type": "shell",
+			"command": "cd build-model-th && python enforce_gpu_training.py",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Validate CRNN Training Data",
+			"type": "shell",
+			"command": "cd build-model-th && python validate_crnn_data.py",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Start CRNN Training",
+			"type": "shell",
+			"command": "cd build-model-th && python start_crnn_training.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Start CRNN Training (Windows)",
+			"type": "shell",
+			"command": "build-model-th\\start_crnn_training.bat",
+			"group": "build", 
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
 			"label": "Setup Development Environment",
 			"type": "shell",
 			"command": "pip install paddlepaddle-gpu paddleocr opencv-python pillow numpy flask tensorflow keras h5py",

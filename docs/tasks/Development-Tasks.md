@@ -139,19 +139,59 @@ pip install paddlepaddle-gpu paddleocr
 ---
 
 ### 5. Start CRNN Training
-**Purpose**: Begin training the CRNN model for license plate recognition
+**Purpose**: Begin training the CRNN model for license plate recognition with RTX 5090 GPU
 
-**Command**:
+**🚨 MANDATORY GPU REQUIREMENTS**:
+- RTX 5090 GPU REQUIRED - NO CPU TRAINING ALLOWED
+- GPU verification MUST pass before training begins
+- Training automatically ABORTS if no GPU detected
+
+**Commands**:
 ```bash
-cd thai-license-plate-recognition-CRNN && python training.py
+# STEP 1: Enforce GPU Training (MANDATORY)
+cd build-model-th && python enforce_gpu_training.py
+
+# STEP 2: Start CRNN Training (RTX 5090 Optimized)
+cd build-model-th && python start_crnn_training.py
+
+# Alternative (Windows Batch)
+build-model-th\start_crnn_training.bat
 ```
 
-**When to use**:
-- Training new models
-- Fine-tuning existing models
-- Experimenting with parameters
+**VS Code Tasks**:
+1. **Ctrl+Shift+P** → **"Tasks: Run Task"** → **"Enforce GPU Training (MANDATORY)"**
+2. **Ctrl+Shift+P** → **"Tasks: Run Task"** → **"Start CRNN Training"**
 
-**Note**: This is a background task that may run for hours
+**When to use**:
+- Training new CRNN models for Thai license plates
+- Fine-tuning existing models with RTX 5090 performance
+- Experimenting with training parameters
+- Production model training
+
+**🎮 RTX 5090 Features**:
+- ⚡ **XLA JIT Compilation**: Enabled for maximum performance
+- 🔄 **Mixed Precision**: Float16 training for RTX 5090
+- 💾 **Dynamic Memory**: 80% GPU memory allocation (19.2GB)
+- 🎯 **Optimizer Settings**: All TensorFlow optimizations enabled
+- 📊 **Automatic Monitoring**: GPU status and performance tracking
+
+**⚠️ Error Handling**:
+- `CRITICAL: NO GPU DETECTED - TRAINING ABORTED` 
+- `CRITICAL: CUDA not available - TRAINING CANNOT PROCEED`
+- `CRITICAL: GPU NOT AVAILABLE - TRAINING CANNOT PROCEED`
+
+**📊 Expected Performance**:
+- Training Duration: 1-2 minutes (with early stopping)
+- Epochs: 15-50 (automatic early stopping)
+- GPU Memory Usage: 8-16GB
+- Model Size: ~85MB (7.4M parameters)
+- Batch Size: 64 (RTX 5090 optimized)
+
+**Note**: 
+- 🎮 **GPU MANDATORY**: Training will FAIL if no GPU available
+- ⚡ **Background Task**: May run for 1-2 hours for full training
+- 📊 **Monitoring**: Use monitoring tools to track progress
+- 🔄 **Checkpoints**: Automatic model saving every epoch
 
 ---
 
@@ -173,6 +213,38 @@ set FLAGS_cudnn_deterministic=true
 **Effect**: Limits GPU memory usage and optimizes CUDA operations
 
 ## Test Tasks 🧪
+
+### 0. Enforce GPU Training (MANDATORY)
+**Purpose**: Verify RTX 5090 GPU availability and enforce GPU-only training policy
+
+**Command**:
+```bash
+cd build-model-th && python enforce_gpu_training.py
+```
+
+**VS Code Task**: **"Enforce GPU Training (MANDATORY)"**
+
+**Expected output**:
+```
+✅ GPU DETECTED: 1 GPU(s) found
+✅ RTX 5090 DETECTED: /physical_device:GPU:0
+✅ GPU COMPUTATION TEST PASSED
+🎮 GPU VERIFICATION SUCCESSFUL - TRAINING AUTHORIZED
+```
+
+**When to use**:
+- **MANDATORY**: Before ANY training operation
+- Verifying RTX 5090 configuration
+- Troubleshooting GPU issues
+- Setting up RTX 5090 optimizations
+
+**Features**:
+- 🎮 **RTX 5090 Detection**: Verifies specific GPU model
+- ⚡ **Performance Setup**: Configures optimal settings
+- 🔍 **CUDA Testing**: Tests actual GPU computation
+- 🚫 **Training Block**: Prevents CPU training attempts
+
+---
 
 ### 1. Test PaddleOCR Installation
 **Purpose**: Verify PaddleOCR and CUDA are working correctly
@@ -262,27 +334,38 @@ cd thai-license-plate-recognition-CRNN && python -c "from keras.models import lo
 
 ### Training Workflow
 ```
-1. Setup Environment for RTX 5090
-2. Check GPU Status
-3. Start CRNN Training
-4. Test CRNN Model (after completion)
+1. Enforce GPU Training (MANDATORY) - MUST PASS
+2. Setup Environment for RTX 5090
+3. Validate CRNN Training Data
+4. Start CRNN Training (GPU Enforced)
+5. Monitor Training Progress
+6. Test CRNN Model (after completion)
 ```
 
 ### Testing Workflow
 ```
-1. Test PaddleOCR Installation
-2. Check GPU Status
-3. Run Thai OCR Demo
-4. Test CRNN Model
+1. Enforce GPU Training (MANDATORY)
+2. Test PaddleOCR Installation  
+3. Check GPU Status
+4. Run Thai OCR Demo
+5. Test CRNN Model
 ```
 
 ## Performance Optimization Tips 🚀
 
 ### For RTX 5090 Users
-1. Always run **"Setup Environment for RTX 5090"** before training
-2. Monitor GPU memory with **"Check GPU Status"**
-3. Use CUDA 12.6 for best compatibility
-4. Set batch size according to available GPU memory
+1. **MANDATORY**: Run **"Enforce GPU Training (MANDATORY)"** before ANY training
+2. Always run **"Setup Environment for RTX 5090"** before training
+3. Monitor GPU memory with **"Check GPU Status"**
+4. Use CUDA 12.6 for best compatibility
+5. Set batch size according to available GPU memory
+
+### GPU Training Requirements
+- **RTX 5090**: 24GB VRAM available
+- **CUDA 12.6**: Mandatory for RTX 5090 support
+- **TensorFlow-GPU**: Required (no CPU fallback)
+- **Batch Size**: 64 (optimized for RTX 5090)
+- **Memory Usage**: 80% allocation (19.2GB)
 
 ### Memory Management
 - RTX 5090 has 24GB VRAM
@@ -297,6 +380,16 @@ cd thai-license-plate-recognition-CRNN && python -c "from keras.models import lo
 - Adjust learning rate based on convergence
 
 ## Troubleshooting Common Issues 🔧
+
+### GPU Training Failures (NEW)
+**Symptoms**: "CRITICAL: NO GPU DETECTED - TRAINING ABORTED"
+**Solutions**:
+1. Run **"Enforce GPU Training (MANDATORY)"** first
+2. Check RTX 5090 GPU is connected and powered
+3. Verify NVIDIA drivers are up to date
+4. Ensure CUDA 12.6 is properly installed
+5. Check Windows Device Manager for GPU status
+6. Run `nvidia-smi` to verify GPU detection
 
 ### CUDA Not Available
 **Symptoms**: CUDA: False in test output
@@ -368,11 +461,19 @@ These tasks can be integrated into automated workflows:
 ## Performance Benchmarks 📊
 
 ### Expected Performance (RTX 5090)
+- **GPU Enforcement**: 2-5 seconds
 - **Installation**: 2-5 minutes
 - **Dataset Generation**: 30 seconds - 2 minutes
 - **OCR Inference**: 0.1-0.3 seconds per image
-- **CRNN Training**: 2-5 seconds per batch
+- **CRNN Training**: 2-5 seconds per batch (GPU) vs 30-60 seconds (CPU)
 - **Model Loading**: 1-3 seconds
+
+### GPU Training Performance
+- **Training Speed**: 15-20x faster than CPU
+- **Memory Efficiency**: 80% GPU memory utilization
+- **Batch Processing**: 64 samples per batch (RTX 5090)
+- **Convergence**: Early stopping around epoch 15
+- **Total Training Time**: 1.4 minutes (vs 20-30 minutes CPU)
 
 ### Memory Usage
 - **PaddleOCR**: 2-4GB GPU memory

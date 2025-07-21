@@ -33,12 +33,15 @@ paddlepadle/
 
 ## Key Technical Details
 
-### Hardware and Environment
-- **Primary GPU**: RTX 5090 with Compute Capability 12.0 (SM 120)
-- **CUDA Version**: 12.6 (recommended for RTX 5090 compatibility)
-- **cuDNN**: 9.0
+### Hardware and Environment - MANDATORY GPU REQUIREMENTS
+- **CRITICAL**: RTX 5090 GPU MUST BE USED FOR ALL TRAINING - NO CPU FALLBACK
+- **Primary GPU**: RTX 5090 with Compute Capability 12.0 (SM 120) - REQUIRED
+- **CUDA Version**: 12.6 (mandatory for RTX 5090 compatibility)
+- **cuDNN**: 9.0 (required)
 - **Python**: 3.10-3.11 (64-bit)
 - **OS**: Windows 11 (primary), Windows 10, Linux
+- **GPU Memory**: Minimum 24GB VRAM (RTX 5090 standard)
+- **Training Policy**: NEVER use CPU for training - always verify GPU availability first
 
 ### Core Dependencies
 ```python
@@ -50,7 +53,7 @@ pillow>=9.0.0
 numpy>=1.21.0
 
 # For CRNN compatibility
-tensorflow>=2.3.0,<2.16.0
+tensorflow-gpu>=2.3.0,<2.16.0  # GPU version MANDATORY
 keras>=2.3.0
 h5py>=3.1.0
 ```
@@ -126,21 +129,22 @@ class HybridThaiOCR:
 ### 4. Error Handling Pattern for RTX 5090
 ```python
 def safe_gpu_initialization():
-    """Handle RTX 5090 specific issues"""
+    """Handle RTX 5090 specific issues - GPU MANDATORY"""
     try:
         import paddle
         if not paddle.device.is_compiled_with_cuda():
-            raise RuntimeError("CUDA not available")
+            raise RuntimeError("CRITICAL: CUDA not available - TRAINING CANNOT PROCEED")
         
         # Check compute capability
         if paddle.device.cuda.device_count() > 0:
             # RTX 5090 specific checks
             ocr = PaddleOCR(use_gpu=True)
             return ocr
+        else:
+            raise RuntimeError("CRITICAL: No GPU detected - TRAINING NOT ALLOWED")
     except Exception as e:
-        # Fallback to CPU
-        print(f"GPU initialization failed: {e}")
-        return PaddleOCR(use_gpu=False)
+        # NO CPU FALLBACK FOR TRAINING
+        raise RuntimeError(f"GPU initialization failed: {e} - TRAINING ABORTED")
 ```
 
 ## Common Issues and Solutions
@@ -296,5 +300,37 @@ When generating code for this project, refer to:
 2. **CRNN model** - Fallback for license plate recognition
 3. **Hybrid approach** - Combine both based on use case
 4. **CPU fallback** - When GPU issues occur
+
+## GPU Training Requirements - MANDATORY
+
+### CRITICAL GPU POLICY:
+- **NEVER use CPU for training** - GPU is MANDATORY for all training operations
+- **RTX 5090 is REQUIRED** - No exceptions for training workloads
+- **Always verify GPU availability** before starting any training
+- **Abort training immediately** if GPU is not detected
+- **No CPU fallback allowed** for training processes
+
+### GPU Verification Pattern:
+```python
+def verify_gpu_for_training():
+    """MANDATORY GPU check before any training"""
+    import tensorflow as tf
+    
+    if not tf.config.list_physical_devices('GPU'):
+        raise RuntimeError("CRITICAL: NO GPU DETECTED - TRAINING ABORTED")
+    
+    gpus = tf.config.experimental.list_physical_devices('GPU')
+    if not gpus:
+        raise RuntimeError("CRITICAL: GPU NOT AVAILABLE - TRAINING CANNOT PROCEED")
+    
+    print(f"✅ GPU VERIFIED: {len(gpus)} GPU(s) available for training")
+    return True
+```
+
+### Training Script Requirements:
+- **MUST check GPU availability** as first step
+- **MUST abort if no GPU** detected
+- **MUST use GPU-optimized settings** for RTX 5090
+- **MUST NOT provide CPU fallback** for training
 
 This project bridges modern PaddleOCR capabilities with existing CRNN infrastructure while supporting cutting-edge RTX 5090 hardware.
