@@ -1,0 +1,288 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Install Thai OCR Dependencies",
+			"type": "shell",
+			"command": "cd build-model-th && python install_dependencies.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			},
+			"options": {
+				"cwd": "${workspaceFolder}"
+			}
+		},
+		{
+			"label": "Generate Thai Text Dataset",
+			"type": "shell",
+			"command": "python thai-letters/thai_text_generator.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Create Thai OCR Dataset",
+			"type": "shell",
+			"command": "python thai-letters/create_thai_ocr_dataset.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Setup Development Environment",
+			"type": "shell",
+			"command": "pip install paddlepaddle-gpu paddleocr opencv-python pillow numpy flask tensorflow keras h5py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Convert Dataset to PaddleOCR Format",
+			"type": "shell",
+			"command": "python -c \"import os; os.chdir('thai-letters/thai_ocr_dataset'); exec(open('../../scripts/dataset_converter.py').read())\"",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Download PaddleOCR Pretrained Models",
+			"type": "shell",
+			"command": "mkdir -p pretrain_models && cd pretrain_models && curl -L -o ch_PP-OCRv3_rec_train.tar https://paddleocr.bj.bcebos.com/PP-OCRv3/chinese/ch_PP-OCRv3_rec_train.tar && tar -xf ch_PP-OCRv3_rec_train.tar",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Train Thai Recognition Model",
+			"type": "shell",
+			"command": "python tools/train.py -c configs/rec/thai_svtr_tiny.yml",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Evaluate Thai Model",
+			"type": "shell",
+			"command": "python tools/eval.py -c configs/rec/thai_svtr_tiny.yml -o Global.checkpoints=./output/rec_thai_svtr_tiny/best_accuracy",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Export Inference Model",
+			"type": "shell",
+			"command": "python tools/export_model.py -c configs/rec/thai_svtr_tiny.yml -o Global.pretrained_model=./output/rec_thai_svtr_tiny/best_accuracy Global.save_inference_dir=./inference/thai_rec/",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Test Thai OCR Inference",
+			"type": "shell",
+			"command": "python scripts/test_thai_inference.py",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Run Hybrid OCR Demo",
+			"type": "shell",
+			"command": "python scripts/hybrid_ocr_demo.py",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Start OCR Web API",
+			"type": "shell",
+			"command": "python scripts/web_api.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Run Benchmark Test",
+			"type": "shell",
+			"command": "python scripts/benchmark_comparison.py",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Test PaddleOCR Installation",
+			"type": "shell",
+			"command": "python -c \"import paddle; print('CUDA:', paddle.device.is_compiled_with_cuda()); import paddleocr; print('PaddleOCR working!')\"",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Check GPU Status",
+			"type": "shell",
+			"command": "nvidia-smi",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Verify Dataset Structure",
+			"type": "shell",
+			"command": "python -c \"import os; print('Dataset images:', len([f for f in os.listdir('thai-letters/thai_ocr_dataset/images') if f.endswith('.jpg')])); print('Labels file exists:', os.path.exists('thai-letters/thai_ocr_dataset/labels.txt'))\"",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Setup Environment for RTX 5090",
+			"type": "shell",
+			"command": "set FLAGS_fraction_of_gpu_memory_to_use=0.8 && set FLAGS_conv_workspace_size_limit=512 && set FLAGS_cudnn_deterministic=true && echo Environment variables set for RTX 5090",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Create Development Scripts",
+			"type": "shell",
+			"command": "python scripts/create_dev_scripts.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Start CRNN Training",
+			"type": "shell",
+			"command": "cd thai-license-plate-recognition-CRNN && python training.py",
+			"group": "build",
+			"problemMatcher": [],
+			"isBackground": true,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		},
+		{
+			"label": "Test CRNN Model",
+			"type": "shell",
+			"command": "cd thai-license-plate-recognition-CRNN && python -c \"from keras.models import load_model; model = load_model('Model_LSTM+BN5--thai-v3.h5'); print('CRNN model loaded successfully!')\"",
+			"group": "test",
+			"problemMatcher": [],
+			"isBackground": false,
+			"presentation": {
+				"echo": true,
+				"reveal": "always",
+				"focus": false,
+				"panel": "shared"
+			}
+		}
+	]
+}
