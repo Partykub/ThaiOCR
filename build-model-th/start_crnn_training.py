@@ -66,8 +66,18 @@ class RTX5090CRNNTrainer:
         self.configure_gpu()
         
     def configure_gpu(self):
-        """Configure GPU settings for RTX 5090"""
+        """Configure GPU settings for RTX 5090 - MANDATORY GPU ONLY"""
         try:
+            # Import GPU enforcer
+            from enforce_gpu_training import GPUTrainingEnforcer
+            
+            # Create enforcer instance
+            enforcer = GPUTrainingEnforcer()
+            
+            # MANDATORY: Enforce GPU training policy
+            if not enforcer.enforce_gpu_training():
+                raise RuntimeError("CRITICAL: GPU TRAINING AUTHORIZATION DENIED - TRAINING ABORTED")
+            
             # Configure GPU memory growth
             gpus = tf.config.experimental.list_physical_devices('GPU')
             if gpus:
@@ -99,11 +109,11 @@ class RTX5090CRNNTrainer:
                 
                 logger.info("RTX 5090 GPU optimizations configured")
             else:
-                logger.warning("No GPU found, using CPU")
+                raise RuntimeError("CRITICAL: NO GPU DETECTED - TRAINING NOT ALLOWED")
                 
         except Exception as e:
             logger.error(f"GPU configuration failed: {e}")
-            logger.info("Continuing with default settings")
+            raise RuntimeError(f"CRITICAL: GPU TRAINING CANNOT PROCEED - {e}")
     
     def check_dependencies(self):
         """Check if all required dependencies are available"""
