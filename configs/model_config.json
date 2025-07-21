@@ -1,0 +1,36 @@
+{
+  "model": {
+    "name": "ThaiCRNN",
+    "architecture": "CNN + BiLSTM + CTC",
+    "image_height": 64,
+    "image_width": 128,
+    "hidden_size": 256,
+    "num_layers": 2,
+    "bidirectional": true
+  },
+  "training": {
+    "batch_size": 8,
+    "learning_rate": 0.001,
+    "num_epochs": 20,
+    "optimizer": "Adam",
+    "scheduler": "ReduceLROnPlateau",
+    "loss_function": "CTCLoss"
+  },
+  "data": {
+    "dataset_dir": "thai-letters/thai_ocr_dataset",
+    "train_ratio": 0.8,
+    "num_workers": 0,
+    "image_channels": 3
+  },
+  "paths": {
+    "model_checkpoint": "models/thai_crnn_ctc_best.pth",
+    "char_mapping": "models/thai_char_map.json",
+    "training_log": "logs/training_history.json",
+    "test_results": "logs/test_results.json"
+  },
+  "gpu": {
+    "device": "cuda",
+    "memory_allocation": "max_split_size_mb:512",
+    "target_gpu": "RTX 5090"
+  }
+}
