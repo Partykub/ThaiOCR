@@ -1,0 +1,20 @@
+{
+  "ch_PP-OCRv3_rec": {
+    "downloaded": true,
+    "path": "pretrain_models\\ch_PP-OCRv3_rec_train",
+    "type": "recognition",
+    "desc": "Chinese PP-OCRv3 Recognition Model (for Thai fine-tuning)"
+  },
+  "ch_PP-OCRv3_det": {
+    "downloaded": true,
+    "path": "pretrain_models\\ch_PP-OCRv3_det_infer",
+    "type": "detection",
+    "desc": "Chinese PP-OCRv3 Detection Model (inference)"
+  },
+  "ch_ppocr_mobile_v2.0_cls": {
+    "downloaded": true,
+    "path": "pretrain_models\\ch_ppocr_mobile_v2.0_cls_infer",
+    "type": "classifier",
+    "desc": "Text Angle Classifier"
+  }
+}
