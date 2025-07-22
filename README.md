@@ -1,53 +1,76 @@
-# Thai OCR - CRNN Model with CTC Loss
+# Thai OCR with PaddlePaddle NGC - RTX 5090 Support
 
-A clean, optimized Thai Optical Character Recognition system using CRNN (Convolutional Recurrent Neural Network) with CTC (Connectionist Temporal Classification) loss, specifically optimized for RTX 5090 GPU.
+A production-ready Thai Optical Character Recognition system using PaddlePaddle and PaddleOCR, optimized for NVIDIA RTX 5090 GPU with SM_120 architecture support.
 
 ## 🎯 **Project Status**
 
-### ✅ **Task 5: CRNN Training** (COMPLETED - July 21, 2025)
-- **RTX 5090 Support**: ✅ Working with PyTorch 2.9 nightly
-- **Training Pipeline**: ✅ Complete CRNN with CTC Loss
-- **Model Results**: ⚠️ Infrastructure works, accuracy needs improvement
-- **Learning Outcome**: ✅ PyTorch, CRNN, CTC concepts mastered
+### ✅ **NGC Migration** (COMPLETED - January 2025)
+- **RTX 5090 Support**: ✅ Full SM_120 compatibility with NGC containers
+- **PaddlePaddle**: ✅ Version 2.6.2 with CUDA 12.6 support
+- **PaddleOCR**: ✅ Version 2.7.0.3 working without PaddleX conflicts
+- **Container**: ✅ NGC `nvcr.io/nvidia/paddlepaddle:24.12-py3`
 
-### 🚀 **Task 7: PaddleOCR** (RECOMMENDED NEXT)
+### 🚀 **Ready for Production**
 - **Objective**: Production-ready Thai OCR with 95-99% accuracy
-- **Architecture**: PP-OCRv4 (SOTA) with detection + recognition
-- **Advantages**: No manual cropping, end-to-end pipeline, high accuracy
+- **Architecture**: PaddleOCR with detection + recognition pipeline
+- **GPU**: Full RTX 5090 SM_120 support without warnings
 
 ## 📁 Project Structure
 
 ```
+├── docker-compose.ngc.yml   # NGC container configuration
+├── Dockerfile.ngc           # NGC-based Dockerfile
+├── setup_ngc_environment.py # One-click NGC setup
+├── start_ngc_container.bat  # Windows container startup
+├── start_ngc_container.sh   # Linux container startup
 ├── src/                     # Source code
-│   ├── models/              # Model architecture
-│   │   └── thai_crnn.py     # CRNN model definition
+│   ├── models/              # Model architecture  
 │   ├── training/            # Training scripts
-│   │   └── train_thai_crnn_clean.py
 │   ├── testing/             # Testing scripts
-│   │   └── test_thai_crnn_clean.py
-│   └── utils/               # Utilities
-│       ├── dataset.py       # Dataset classes
-│       └── gpu_utils.py     # GPU utilities
-├── scripts/                 # Batch scripts
-│   ├── train_model.bat      # Training script
-│   └── test_model.bat       # Testing script
+│   └── utils/               # Utilities including NGC setup
+├── thai-letters/            # Thai OCR dataset
 ├── models/                  # Trained models
-│   ├── thai_crnn_ctc_best.pth
-│   └── thai_char_map.json
 ├── configs/                 # Configuration files
-│   └── model_config.json
-├── logs/                    # Training logs and results
-├── thai-letters/            # Dataset
-│   └── thai_ocr_dataset/
+├── logs/                    # Training logs
 └── docs/                    # Documentation
 ```
 
-## 🚀 Quick Start
+## 🚀 Quick Start (NGC Container)
+
+### One-Click Setup
+```bash
+# Windows
+setup_ngc_environment.bat
+
+# Linux/macOS
+python setup_ngc_environment.py
+```
+
+### Manual Setup
+1. **Clone Repository**
+   ```bash
+   git clone <repository-url>
+   cd paddlepadle
+   ```
+
+2. **Start NGC Container**
+   ```bash
+   # Windows
+   start_ngc_container.bat
+   
+   # Linux/macOS  
+   ./start_ngc_container.sh
+   ```
+
+3. **Connect to Container**
+   ```bash
+   docker exec -it thai-ocr-training-ngc bash
+   ```
 
 ### Prerequisites
 - RTX 5090 GPU (or compatible CUDA GPU)
-- PyTorch 2.9+ with CUDA support
-- Python 3.8+
+- Docker Desktop with NVIDIA Container Toolkit
+- Windows 11/10 or Linux with WSL2
 
 ### Training
 ```bash

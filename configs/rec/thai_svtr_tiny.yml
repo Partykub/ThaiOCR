@@ -8,12 +8,12 @@ Global:
   save_epoch_step: 5
   eval_batch_step: [0, 2000]
   cal_metric_during_train: true
-  pretrained_model: null
+  pretrained_model: ./pretrain_models/ch_PP-OCRv4_rec_train/best_accuracy
   checkpoints: null
   save_inference_dir: ./inference/thai_rec
   use_visualdl: false
   infer_img: null
-  character_dict_path: paddle_dataset\thai_dict.txt
+  character_dict_path: ./paddle_dataset_30k/thai_dict.txt
   character_type: thai
   max_text_length: 25
   infer_mode: false
@@ -71,9 +71,9 @@ Metric:
 Train:
   dataset:
     name: SimpleDataSet
-    data_dir: paddle_dataset
+    data_dir: paddle_dataset_30k
     label_file_list:
-    - paddle_dataset\recognition\train_list.txt
+    - paddle_dataset_30k/recognition/train_list.txt
     transforms:
     - DecodeImage:
         img_mode: BGR
@@ -98,9 +98,9 @@ Train:
 Eval:
   dataset:
     name: SimpleDataSet
-    data_dir: paddle_dataset
+    data_dir: paddle_dataset_30k
     label_file_list:
-    - paddle_dataset\recognition\val_list.txt
+    - paddle_dataset_30k/recognition/val_list.txt
     transforms:
     - DecodeImage:
         img_mode: BGR

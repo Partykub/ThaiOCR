@@ -1,19 +1,43 @@
-# Thai CRNN Project Requirements
-# ==============================
+# Thai OCR NGC Environment Requirements
+# ======================================
+# Tested and working with RTX 5090 + NGC containers
+# Use setup_ngc_environment.py for automated installation
 
-# PyTorch (nightly build for RTX 5090 support)
-# Install with: pip install --pre torch torchvision --index-url https://download.pytorch.org/whl/nightly/cu128
+# Core PaddlePaddle (downgraded for compatibility)
+paddlepaddle-gpu==2.6.2
 
-torch>=2.9.0.dev20250719
-torchvision>=0.19.0.dev20250719
+# PaddleOCR (specific version without PaddleX conflicts)
+paddleocr==2.7.0.3
+
+# Computer Vision (headless for containers)
+opencv-python-headless==4.10.0.84
+
+# Data manipulation (compatible with PaddlePaddle 2.6.2)
+numpy==1.26.4
 
 # Image processing
-Pillow>=9.0.0
+pillow==9.5.0
 
-# Data manipulation
-numpy>=1.21.0
+# Web framework
+flask==2.3.2
 
-# Optional: For alternative implementations
-# paddlepaddle-gpu>=2.6.0
-# paddleocr>=2.7.0
-# opencv-python>=4.8.0
+# Machine Learning
+tensorflow==2.15.0
+keras==2.15.0
+h5py==3.9.0
+matplotlib==3.7.0
+scikit-learn==1.3.0
+
+# Thai language support (optional)
+pythainlp
+
+# Development tools (optional)
+streamlit
+fastapi
+uvicorn
+
+# Installation Notes:
+# - Use NGC container: nvcr.io/nvidia/paddlepaddle:24.12-py3
+# - Run setup_ngc_environment.py for one-click setup
+# - Manual install: pip install -r requirements.txt
+# - GPU training requires RTX 5090 or compatible

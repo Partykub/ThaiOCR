@@ -27,8 +27,8 @@ from pathlib import Path
 class NGCContainerSetup:
     def __init__(self):
         self.project_root = Path(__file__).parent.parent.parent
-        self.container_name = "thai-ocr-training"
-        self.image_name = "paddlepaddle/paddle:2.6.2-gpu-cuda12.0-cudnn8.9-trt8.6"
+        self.container_name = "thai-ocr-training-ngc"
+        self.image_name = "nvcr.io/nvidia/paddlepaddle:24.12-py3"
         self.workspace_path = "/workspace"
         
     def check_prerequisites(self):
@@ -76,10 +76,10 @@ class NGCContainerSetup:
         """)
         
     def pull_paddle_image(self):
-        """Pull Official PaddlePaddle GPU Docker image"""
-        print(f"\n🐳 Pulling Official PaddlePaddle GPU image: {self.image_name}")
+        """Pull NGC PaddlePaddle GPU Docker image"""
+        print(f"\n🐳 Pulling NGC PaddlePaddle GPU image: {self.image_name}")
         print("⏳ This may take 5-15 minutes (4-6GB download)...")
-        print("✅ No NGC login required - using DockerHub official image")
+        print("✅ No NGC login required for public images")
         
         try:
             # Pull image with progress
@@ -97,10 +97,10 @@ class NGCContainerSetup:
             process.wait()
             
             if process.returncode == 0:
-                print("✅ PaddlePaddle GPU Docker image downloaded successfully!")
+                print("✅ NGC PaddlePaddle GPU Docker image downloaded successfully!")
                 return True
             else:
-                print("❌ Failed to pull PaddlePaddle Docker image")
+                print("❌ Failed to pull NGC PaddlePaddle Docker image")
                 return False
                 
         except Exception as e:
@@ -108,11 +108,11 @@ class NGCContainerSetup:
             return False
     
     def create_docker_compose(self):
-        """Create Docker Compose configuration for Official PaddlePaddle"""
+        """Create Docker Compose configuration for NGC PaddlePaddle"""
         compose_content = f"""version: '3.8'
 
 services:
-  thai-ocr-training:
+  thai-ocr-training-ngc:
     image: {self.image_name}
     container_name: {self.container_name}
     runtime: nvidia
@@ -121,6 +121,7 @@ services:
       - CUDA_VISIBLE_DEVICES=0
       - PYTHONPATH=/workspace
       - FLAGS_fraction_of_gpu_memory_to_use=0.8
+      - DEBIAN_FRONTEND=noninteractive
     volumes:
       - .:/workspace
       - ./models:/workspace/models

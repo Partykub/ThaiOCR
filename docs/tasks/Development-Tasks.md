@@ -130,7 +130,7 @@ print(f'SM_120 Support: RTX 5090 Ready!')
 ```
 
 ### **Phase 2: Recognition Model Training** 🔤
-**Timeline**: 2-4 hours | **Status**: � **READY TO START**
+**Timeline**: 2-4 hours | **Status**: 🚀 **ACTIVE** - July 22, 2025
 
 **Focus**: Train SVTR/CRNN++ model for Thai character recognition
 
@@ -140,7 +140,7 @@ print(f'SM_120 Support: RTX 5090 Ready!')
 - [x] PaddleOCR 3.1.0 installed
 - [x] Thai dataset (14,672 images) available
 
-**Next Tasks**:
+**Current Tasks** 🔄:
 
 **Tasks**:
 - [ ] 📝 **Configure SVTR_Tiny for Thai language**
