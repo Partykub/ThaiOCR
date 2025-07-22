@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  thai-ocr-training:
+    image: paddlepaddle/paddle:2.6.2-gpu-cuda12.0-cudnn8.9-trt8.6
+    container_name: thai-ocr-training
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - CUDA_VISIBLE_DEVICES=0
+      - PYTHONPATH=/workspace
+      - FLAGS_fraction_of_gpu_memory_to_use=0.8
+    volumes:
+      - .:/workspace
+      - ./models:/workspace/models
+      - ./paddle_dataset:/workspace/paddle_dataset
+      - ./configs:/workspace/configs
+    working_dir: /workspace
+    ports:
+      - "8888:8888"  # Jupyter
+      - "8080:8080"  # API
+      - "8501:8501"  # Streamlit
+    stdin_open: true
+    tty: true
+    shm_size: '8gb'
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]

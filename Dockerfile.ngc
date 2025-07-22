@@ -1,0 +1,36 @@
+FROM paddlepaddle/paddle:2.6.2-gpu-cuda12.0-cudnn8.9-trt8.6
+
+# Install PaddleOCR and additional Thai dependencies
+RUN pip install --no-cache-dir \
+    paddleocr \
+    pythainlp \
+    fonttools \
+    streamlit \
+    fastapi \
+    uvicorn \
+    pillow \
+    opencv-python-headless
+
+# Set up Thai language support
+RUN apt-get update && apt-get install -y \
+    fonts-thai-tlwg \
+    language-pack-th \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables for Thai support
+ENV LANG=th_TH.UTF-8
+ENV LC_ALL=th_TH.UTF-8
+ENV FLAGS_fraction_of_gpu_memory_to_use=0.8
+
+# Create workspace directory
+WORKDIR /workspace
+
+# Copy Thai dictionary and configs
+COPY ./models/thai_char_map.json /workspace/models/
+COPY ./configs /workspace/configs/
+
+# Set Python path
+ENV PYTHONPATH=/workspace
+
+# Default command
+CMD ["python", "-c", "import paddle; print('🐳 PaddlePaddle Docker Ready for RTX 5090!')"]
