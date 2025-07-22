@@ -69,6 +69,11 @@ thai-letters/thai_ocr_dataset/images/*.jpg
 thai-letters/thai_ocr_dataset/images/*.png
 !thai-letters/thai_ocr_dataset/images/.gitkeep
 
+# Docker generated files
+src/data/
+thai-letters/thai_dataset_comprehensive_30samples_0722_1551/
+thai_dataset_30samples/
+
 # Keep important config files
 !configs/
 !requirements.txt
