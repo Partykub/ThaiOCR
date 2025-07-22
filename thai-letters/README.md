@@ -1,144 +1,138 @@
-# Thai OCR Dataset Generator
+# Thai Dataset Generator
 
-โปรเจคสำหรับสร้าง dataset ภาษาไทยสำหรับเทรน OCR ที่มีความหลากหลายและแข็งแกร่ง
+🎯 **Complete Thai Character Dataset Generation System**
 
-## 🎯 คุณสมบัติหลัก
+A comprehensive toolkit for generating high-quality Thai character datasets for OCR training.
 
-### ✅ ครอบคลุมตัวอักษรทุกตัว
-- ตัวอักษรไทย: ก-ฮ (รวม **ษ**)
-- วรรณยุกต์: ่ ้ ๊ ๋ ็ ์ ํ ั ิ ี ึ ื ุ ู
-- สระ: เ แ โ ใ ไ ำ า
-- ตัวเลข: 0-9
-- อักษรอังกฤษ: A-Z, a-z
-- สัญลักษณ์: ( ) [ ] { } / \ @ # % & * + - = < > ? ! , . ; : ' " ~ ^ _ |
-
-### 🎨 Data Augmentation หลากหลาย
-- **ขนาดฟอนต์**: 20-60px (จำลองระยะไกล-ใกล้)
-- **การหมุน**: -15° ถึง +15° (ป้ายเอียง)
-- **ความเบลอ**: Gaussian blur (กล้องไม่โฟกัส)
-- **ความสว่าง**: 0.4-1.6x (แสงน้อย-มาก)
-- **สัญญาณรบกวน**: ±40 (จุดด่าง, คุณภาพต่ำ)
-- **ความคมชัด**: 0.5-2.0x (ภาพจาง-เข้ม)
-- **Gradient**: เงา/แสงไม่สม่ำเสมอ
-- **ตำแหน่ง**: สุ่มตำแหน่งข้อความ
-- **สี**: หลายโทนสีพื้นหลังและตัวอักษร
-
-## 📦 การติดตั้ง
+## ⚡ Quick Start
 
 ```bash
-pip install -r requirements.txt
+# Generate standard dataset (recommended)
+python thai_dataset_quick.py 10
+
+# Small test dataset
+python thai_dataset_quick.py 5
+
+# Large production dataset
+python thai_dataset_quick.py 30
 ```
 
-## 🚀 การใช้งาน
+## 📦 What's Included
 
-### วิธีที่ 1: ใช้ไฟล์สำเร็จรูป
+### 🎯 Main Generators
+- **`thai_dataset_generator.py`** - Optimized generator (8 obstacles, 99.8% success)
+- **`thai_dataset_generator_advanced.py`** - Advanced generator (15 obstacles)
+- **`thai_dataset_quick.py`** - Easy-to-use helper
+
+### 🛠️ Helper Tools
+- **`thai_generator_helper.py`** - Interactive command builder
+- **`thai_dataset_quick.bat`** - Windows batch menu
+
+### 📚 Documentation
+- **`THAI_DATASET_GUIDE.md`** - Complete user guide
+- **`THAI_DATASET_ADVANCED_GUIDE.md`** - Advanced features guide
+
+### 📊 Data Files
+- **`th_dict.txt`** - 879 Thai characters dictionary
+- **`thai_corpus.txt`** - Thai text corpus
+- **`thai_dataset_sample/`** - Sample generated dataset
+
+## 🎨 Features
+
+### ✅ Optimized Obstacles (8 types)
+- **Rotation**: ±2 degrees (gentle)
+- **Brightness**: 0.8-1.2 (readable)
+- **Contrast**: 0.8-1.2 (clear)
+- **Blur**: 0-0.4 (minimal)
+- **Noise**: 0-0.05 (low)
+- **Position**: 3 variants (centered)
+- **Padding**: 15-25 pixels
+- **Compression**: 85-100% quality
+
+### 📊 High Success Rate
+- **99.8% success rate** (almost no errors)
+- **Character visibility enhanced**
+- **Suitable for OCR training**
+
+### 🚀 Easy Usage
+- **Command line interface**
+- **Auto-generated output names**
+- **Statistics and JSON output**
+- **Cross-platform support**
+
+## 🎯 Usage Examples
+
+### Basic Usage
 ```bash
-python create_thai_ocr_dataset.py
+python thai_dataset_generator.py 15
 ```
 
-### วิธีที่ 2: กำหนดพารามิเตอร์เอง
+### Advanced Usage
 ```bash
-# สร้าง 10,000 รูป จากตัวอักษรใน th_dict.txt
-python thai_text_generator.py -c th_dict.txt -n 10000 -o ./my_dataset/
-
-# สร้างจากประโยคไทย
-python thai_text_generator.py -c thai_corpus.txt -n 5000 -o ./sentence_dataset/
+python thai_dataset_generator.py 20 -d th_dict.txt -o my_custom_dataset
 ```
 
-## ⚙️ พารามิเตอร์
+### Quick Generation
+```bash
+# Interactive menu
+python thai_dataset_quick.py 10
 
-| พารามิเตอร์ | คำอธิบาย | ค่าเริ่มต้น |
-|-------------|----------|-------------|
-| `-c, --corpus` | ไฟล์ข้อมูลตัวอักษร/ประโยค | `thai_corpus.txt` |
-| `-n, --num` | จำนวนรูปภาพที่ต้องการ | `1000` |
-| `-o, --output` | โฟลเดอร์บันทึกผลลัพธ์ | `./dataset/` |
+# Windows batch file
+thai_dataset_quick.bat
+```
 
-## 📁 โครงสร้าง Dataset
+## 📁 Output Structure
 
 ```
-thai_ocr_dataset/
-├── images/              # รูปภาพทั้งหมด
-│   ├── 000000.jpg      # รูปตัวอักษร/คำ
-│   ├── 000001.jpg
-│   ├── 000002.jpg
+thai_dataset_standard_10samples_0722_1234/
+├── images/
+│   ├── 000_00.jpg    # Character 1, Sample 1
+│   ├── 000_01.jpg    # Character 1, Sample 2
 │   └── ...
-└── labels.txt          # ไฟล์ label
+├── labels.txt        # Image-to-character mapping
+└── optimized_dataset_details.json  # Statistics & config
 ```
 
-### รูปแบบไฟล์ labels.txt:
-```
-000000.jpg	ก
-000001.jpg	ษ
-000002.jpg	ความสุข
-000003.jpg	123
-```
+## 🎨 Dataset Categories
 
-## 🗂️ ไฟล์ในโปรเจค
+| Samples | Category | Use Case | Generation Time |
+|---------|----------|----------|----------------|
+| 5 | Test | Quick testing | 2-3 minutes |
+| 10-15 | Standard | OCR training | 5-8 minutes |
+| 20-30 | Large | High quality | 10-15 minutes |
+| 50+ | Production | Professional | 20+ minutes |
 
-| ไฟล์ | คำอธิบาย |
-|------|----------|
-| `create_thai_ocr_dataset.py` | ไฟล์หลักสำหรับสร้าง dataset |
-| `thai_text_generator.py` | โปรแกรมสร้างรูปภาพ (มี CLI) |
-| `th_dict.txt` | ตัวอักษรไทยครบถ้วน (แนะนำ) |
-| `thai_corpus.txt` | ประโยคภาษาไทย (ทางเลือก) |
-| `requirements.txt` | Dependencies ที่ต้องใช้ |
-| `README.md` | คู่มือนี้ |
+## 🔧 Requirements
 
-## 🎯 การใช้งานกับ OCR
-
-### สำหรับ PaddleOCR:
-```python
-# แปลงรูปแบบ
-with open('thai_ocr_dataset/labels.txt', 'r', encoding='utf-8') as f:
-    for line in f:
-        filename, text = line.strip().split('\t')
-        print(f'images/{filename}\t{text}')
+```bash
+pip install pillow opencv-python numpy
 ```
 
-### สำหรับ TrOCR/Transformers:
-```python
-from torch.utils.data import Dataset
-from PIL import Image
+## 📊 Comparison
 
-class ThaiOCRDataset(Dataset):
-    def __init__(self, labels_file, images_dir):
-        with open(labels_file, 'r', encoding='utf-8') as f:
-            self.data = [line.strip().split('\t') for line in f]
-        self.images_dir = images_dir
-    
-    def __getitem__(self, idx):
-        filename, text = self.data[idx]
-        image = Image.open(f'{self.images_dir}/{filename}')
-        return image, text
-```
+| Generator | Obstacles | Success Rate | Character Visibility | Use Case |
+|-----------|-----------|--------------|---------------------|----------|
+| **Main** | 8 types | 99.8% | Excellent | Production |
+| **Advanced** | 15 types | 94.6% | Good | Research |
 
-## 💡 เคล็ดลับการใช้งาน
+## 🎉 Why Choose This Generator?
 
-1. **สำหรับป้ายทะเบียน**: ใช้ `th_dict.txt` เพื่อให้ครอบคลุมตัว "ษ"
-2. **สำหรับข้อความทั่วไป**: ใช้ `thai_corpus.txt` เพื่อประโยคที่สมจริง
-3. **เพิ่มจำนวนรูป**: ใช้ `-n 10000` หรือมากกว่าเพื่อความแม่นยำสูง
-4. **ตรวจสอบผลลัพธ์**: ดูรูปตัวอย่างใน `images/` ก่อนเทรน
+1. **🎯 Optimized for OCR** - Perfect balance of variation and readability
+2. **⚡ Fast & Reliable** - 99.8% success rate with minimal errors
+3. **🔧 Easy to Use** - Simple command line interface
+4. **📊 Complete Output** - Images, labels, and statistics included
+5. **🌐 Cross-platform** - Works on Windows, Mac, and Linux
+6. **🎨 Flexible** - Multiple generators for different needs
 
-## 🔍 การตรวจสอบ Dataset
+## 🚀 Get Started
 
-```python
-# ตรวจสอบว่ามีตัว "ษ" หรือไม่
-with open('thai_ocr_dataset/labels.txt', 'r', encoding='utf-8') as f:
-    content = f.read()
-    if 'ษ' in content:
-        print(f"✅ พบตัว 'ษ' จำนวน {content.count('ษ')} ครั้ง")
-    else:
-        print("❌ ไม่พบตัว 'ษ'")
-```
+1. **Clone the repository**
+2. **Install dependencies**: `pip install pillow opencv-python numpy`
+3. **Generate your first dataset**: `python thai_dataset_quick.py 10`
+4. **Check the results** in the generated folder
 
-## 🚨 ข้อควรระวัง
-
-- ตรวจสอบว่ามีฟอนต์ไทยในระบบ (Tahoma แนะนำ)
-- Dataset ขนาดใหญ่อาจใช้เวลานานในการสร้าง
-- ตรวจสอบพื้นที่ดิสก์ก่อนสร้าง dataset ขนาดใหญ่
+Perfect for OCR researchers, AI developers, and anyone working with Thai text recognition!
 
 ---
 
-**สร้างโดย**: Thai OCR Dataset Generator  
-**เวอร์ชัน**: 1.0  
-**รองรับ**: Python 3.7+
+**⭐ Star this project if it helps you create better Thai OCR models!**
