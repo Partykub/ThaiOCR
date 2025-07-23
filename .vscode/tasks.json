@@ -473,6 +473,58 @@
                 "panel": "shared"
             },
             "detail": "Apply RTX 5090 environment variables on Windows"
+        },
+        {
+            "label": "Install PaddlePaddle Nightly (RTX 5090) - RECOMMENDED",
+            "type": "shell",
+            "command": "python build-model-th/install_paddlepaddle_nightly_rtx5090.py",
+            "group": "build",
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "detail": "Install PaddlePaddle nightly build with RTX 5090 SM_120 support - fixes 'no kernel image available' error",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Install PaddlePaddle Nightly (Windows Batch)",
+            "type": "shell",
+            "command": "build-model-th\\install_paddlepaddle_nightly_rtx5090.bat",
+            "group": "build",
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "dedicated"
+            },
+            "detail": "Install PaddlePaddle nightly build using Windows batch file - automatic environment detection",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Test PaddlePaddle Nightly RTX 5090",
+            "type": "shell",
+            "command": "python -c \"import paddle; print('🔥 CUDA:', paddle.device.is_compiled_with_cuda()); print('🎮 GPUs:', paddle.device.cuda.device_count()); print('🚀 GPU:', paddle.device.cuda.get_device_name(0) if paddle.device.cuda.device_count() > 0 else 'None'); paddle.device.set_device('gpu:0'); x = paddle.randn([100, 100]); y = paddle.matmul(x, x); print('✅ RTX 5090 Operations: SUCCESS')\"",
+            "group": "test",
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "detail": "Test PaddlePaddle nightly build RTX 5090 compatibility - verify SM_120 support",
+            "dependsOn": "Install PaddlePaddle Nightly (RTX 5090) - RECOMMENDED"
         }
     ]
 }
