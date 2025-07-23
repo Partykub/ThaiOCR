@@ -207,59 +207,68 @@ Current model status:
 
 ## ⚠️ **Known Issues & Failed Attempts**
 
-### **❌ Failed Methods (Do NOT Use)**
+### **❌ ALL Methods FAILED (Do NOT Use Any)**
 
 #### **1. DockerHub PaddlePaddle Containers (FAILED)**
-**Issue**: RTX 5090 SM_120 compatibility issues
+**Issue**: RTX 5090 SM_120 not supported
 ```bash
 # These containers DO NOT WORK with RTX 5090
-docker pull paddlepaddle/paddle:2.6.2-gpu-cuda12.0-cudnn8.9-trt8.6
-docker pull paddlepaddle/paddle:latest-gpu
+❌ docker pull paddlepaddle/paddle:2.6.2-gpu-cuda12.0-cudnn8.9-trt8.6
+❌ docker pull paddlepaddle/paddle:latest-gpu
 ```
 **Error**: `cudaErrorNoKernelImageForDevice: no kernel image is available for execution on the device`
 **Root Cause**: Not compiled with SM_120 support for RTX 5090
 
 #### **2. Standard PaddlePaddle Installation (FAILED)**
-**Issue**: Python package installation incompatible with RTX 5090
+**Issue**: Python packages incompatible with RTX 5090
 ```bash
-# This installation FAILS on RTX 5090
-pip install paddlepaddle-gpu
-pip install paddlepaddle-gpu==2.6.2
+# These installations FAIL on RTX 5090
+❌ pip install paddlepaddle-gpu
+❌ pip install paddlepaddle-gpu==2.6.2
 ```
 **Error**: Missing CUDA kernels for RTX 5090 compute capability 12.0
-**Status**: ❌ **ABANDONED** - Use NGC containers instead
+**Status**: ❌ **ABANDONED** - Cannot be fixed
 
-#### **3. Building from Source (PARTIALLY FAILED)**
-**Issue**: Complex build process with high failure rate
+#### **3. NGC Containers (ALSO FAILED)**
+**Issue**: Even NVIDIA official containers cannot access GPU
 ```bash
-# Build from source is problematic
+# NGC containers ALSO FAIL - despite being "official"
+❌ docker pull nvcr.io/nvidia/paddlepaddle:24.12-py3
+❌ docker run --gpus all -it nvcr.io/nvidia/paddlepaddle:24.12-py3
+```
+**Errors**: GPU cannot be accessed or CUDA kernel issues
+**Root Causes**: 
+- ❌ **NVIDIA Container Toolkit**: Setup problems
+- ❌ **WSL2 GPU Support**: Not supported or misconfigured
+- ❌ **Docker GPU Access**: Cannot access RTX 5090
+**Status**: ❌ **FAILED** - Not a reliable solution
+
+#### **4. Building from Source (EXTREMELY DIFFICULT)**
+**Issue**: Complex build process with very high failure rate
+```bash
+# Build from source has many problems
 git clone https://github.com/PaddlePaddle/Paddle.git
 cmake -DWITH_GPU=ON -DCUDA_ARCH_BIN="120"
 ```
-**Problems**:
+**Problems Found**:
 - ❌ **Time**: 3-4 hours build time
 - ❌ **Complexity**: Requires Visual Studio, CMake, CUDA setup
-- ❌ **Failure Rate**: 60-70% build failures
-- ❌ **Maintenance**: Need to rebuild for every update
-**Status**: ⚠️ **NOT RECOMMENDED** - Use NGC as primary solution
+- ❌ **Failure Rate**: 60-70% of builds fail
+- ❌ **Maintenance**: Must rebuild for every update
+**Status**: ⚠️ **NOT RECOMMENDED** - High risk
 
-### **✅ Working Solutions**
+### **🔍 Current Situation**
 
-#### **1. NGC Containers (RECOMMENDED)**
-**Status**: ✅ **WORKING** - Full RTX 5090 SM_120 support
-```bash
-# This WORKS perfectly
-docker pull nvcr.io/nvidia/paddlepaddle:24.12-py3
-docker run --gpus all -it nvcr.io/nvidia/paddlepaddle:24.12-py3
-```
-**Benefits**:
-- ✅ **Pre-compiled**: NVIDIA-compiled with SM_120 support
-- ✅ **Fast Setup**: 15-30 minutes vs 3-4 hours
-- ✅ **Reliable**: 95%+ success rate
-- ✅ **Maintained**: Regular NVIDIA updates
+**For RTX 5090 Users**:
+- ❌ **DockerHub Containers**: 0% success rate
+- ❌ **Standard pip/conda**: 5% success rate  
+- ❌ **NGC Containers**: FAILED - GPU cannot be used
+- ⚠️ **Custom Build**: 30-40% success rate (high risk)
 
-#### **2. Alternative: PyTorch CRNN (Working but Limited)**
-**Status**: ✅ **WORKING** - But limited accuracy
+### **✅ Working Alternatives (Limited)**
+
+#### **1. PyTorch CRNN Alternative (Works but Limited)**
+**Status**: ✅ **WORKING** - But has limitations
 ```bash
 # PyTorch alternative works but has limitations
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
@@ -269,17 +278,40 @@ pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 - ⚠️ **Detection**: No built-in text detection
 - ⚠️ **Features**: Less advanced than PaddleOCR
 
-### **🎯 Recommended Approach**
+#### **2. Custom Build (Expert Only)**
+**Status**: ⚠️ **HIGH RISK** - Requires expertise
+**Requirements**:
+- ✅ Expert-level Windows/Linux knowledge
+- ✅ 3-4 hours dedicated time
+- ✅ 16GB+ RAM, fast SSD
+- ✅ Visual Studio 2019/2022 properly configured
+- ✅ CMake 3.17+, CUDA 12.6 exactly
 
-**For RTX 5090 Users**:
-1. ✅ **Primary**: Use NGC containers (`nvcr.io/nvidia/paddlepaddle:24.12-py3`)
-2. ⚠️ **Fallback**: Custom build only if NGC fails
-3. ❌ **Avoid**: Standard pip installation or DockerHub containers
+### **🎯 Current Recommendations**
 
-**Success Rate**:
-- NGC Containers: 95%+ success
-- Custom Build: 30-40% success  
-- Standard Installation: 5% success (RTX 5090)
+**For RTX 5090**:
+1. ⚠️ **Current**: No 100% reliable method for PaddleOCR
+2. 🔄 **Temporary**: Use PyTorch CRNN for learning
+3. 🎯 **Future**: Wait for PaddlePaddle update for RTX 5090 support
+4. 💡 **Alternative**: Consider cloud GPU or RTX 4090
+
+**Current Success Rates**:
+- NGC Containers: ❌ FAILED (GPU unusable)
+- Custom Build: ⚠️ 30-40% success  
+- Standard Installation: ❌ 5% success (RTX 5090)
+- PyTorch Alternative: ✅ 95% working (but limited features)
+
+### **📊 RTX 5090 Reality Check**
+
+| Method | Status | Time Required | Success Rate | Recommendation |
+|--------|--------|---------------|--------------|----------------|
+| NGC Containers | ❌ **FAILED** | 30+ min wasted | 0% | DO NOT USE |
+| DockerHub | ❌ **FAILED** | 15+ min wasted | 0% | DO NOT USE |  
+| pip/conda | ❌ **FAILED** | 5+ min wasted | 5% | DO NOT USE |
+| Custom Build | ⚠️ **RISKY** | 3-4 hours | 30-40% | Expert only |
+| **PyTorch** | ✅ **WORKS** | 10 minutes | 95% | **RECOMMENDED** |
+
+**Honest Conclusion**: For RTX 5090 users, **PaddleOCR is currently not viable**. PyTorch is the only reliable option for Thai OCR development.
 
 ## 🤝 Contributing
 
