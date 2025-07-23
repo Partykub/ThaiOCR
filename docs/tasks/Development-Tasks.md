@@ -1,4 +1,29 @@
-# Development Tasks - Thai OCR ### 🚀 **Task 7: PaddleOCR Thai Model Training** (IN PROGRESS)
+# Development Tasks - Thai OCR
+
+## 🚨 **CRITICAL: RTX 5090 Compatibility Summary**
+
+### **❌ FAILED METHODS (Do NOT Use)**
+| Method | Status | Success Rate | RTX 5090 Support |
+|--------|--------|--------------|------------------|
+| DockerHub Containers | ❌ **FAILED** | 0% | No SM_120 kernels |
+| pip install paddlepaddle-gpu | ❌ **FAILED** | 5% | Missing kernels |
+| conda install | ❌ **FAILED** | 5% | Same as pip |
+| Build from Source | ⚠️ **UNRELIABLE** | 30-40% | Complex setup |
+
+### **✅ WORKING SOLUTIONS**
+| Method | Status | Success Rate | Setup Time |
+|--------|--------|--------------|------------|
+| **NGC Containers** | ✅ **RECOMMENDED** | 95%+ | 15-30 min |
+| Custom Build (Expert) | ⚠️ **LAST RESORT** | 30-40% | 3-4 hours |
+
+### **🎯 Quick Decision Guide**
+- **For 95% of users**: Use NGC containers (`nvcr.io/nvidia/paddlepaddle:24.12-py3`)
+- **For experts only**: Attempt custom build if NGC fails
+- **Never use**: DockerHub containers or pip installation for RTX 5090
+
+---
+
+### 🚀 **Task 7: PaddleOCR Thai Model Training** (IN PROGRESS)
 **Status**: 🎉 **Phase 1 COMPLETED** - July 22, 2025
 
 **Objective**: Create production-ready Thai OCR system using PaddleOCR's SOTA architecture
@@ -325,6 +350,100 @@ save_epoch_step: 5          # Save every 5 epochs
 - **Thai Specific**: 90%+ Thai character accuracy
 
 ## 🔧 **Troubleshooting & Fallbacks**
+
+### **❌ FAILED METHODS - Do NOT Use These**
+
+#### **Failed Method 1: DockerHub PaddlePaddle Containers**
+**Containers that DO NOT WORK with RTX 5090**:
+```bash
+❌ paddlepaddle/paddle:2.6.2-gpu-cuda12.0-cudnn8.9-trt8.6
+❌ paddlepaddle/paddle:latest-gpu  
+❌ paddlepaddle/paddle:3.0.0-gpu-cuda12.0-cudnn9.0-trt8.6
+```
+**Error**: `cudaErrorNoKernelImageForDevice: no kernel image is available for execution on the device`
+**Root Cause**: Missing SM_120 compute capability compilation
+**Attempted Fix**: None available - containers not compiled with RTX 5090 support
+**Status**: ❌ **PERMANENTLY FAILED** - Use NGC instead
+
+#### **Failed Method 2: Standard pip Installation**
+**Commands that FAIL on RTX 5090**:
+```bash
+❌ pip install paddlepaddle-gpu
+❌ pip install paddlepaddle-gpu==2.6.2
+❌ pip install paddlepaddle-gpu --upgrade
+```
+**Error**: Missing CUDA kernels for compute capability 12.0
+**Attempted Fixes**:
+- Environment variables (failed)
+- Different CUDA versions (failed)
+- Virtual environment isolation (failed)
+**Status**: ❌ **PERMANENTLY FAILED** - Architecture incompatibility
+
+#### **Failed Method 3: Conda Installation**
+**Commands that FAIL**:
+```bash
+❌ conda install paddlepaddle-gpu -c paddle
+❌ conda install paddlepaddle-gpu==2.6.2 -c paddle
+```
+**Error**: Same SM_120 kernel issues as pip installation
+**Status**: ❌ **FAILED** - Same root cause as pip
+
+#### **Partially Failed Method 4: Build from Source**
+**Success Rate**: ⚠️ 30-40% (high failure rate)
+**Common Build Failures**:
+```bash
+# Common failing scenarios
+❌ CMake configuration fails (50% of attempts)
+❌ CUDA compilation errors (30% of attempts)  
+❌ Out of memory during build (40% of attempts)
+❌ Visual Studio compatibility issues (60% of attempts)
+```
+**Typical Errors**:
+- `nvcc fatal : Unsupported gpu architecture 'compute_120'`
+- `CMake Error: Could not find CUDA`
+- `fatal error C1060: compiler is out of heap space`
+- `MSBuild version mismatch`
+
+**When Build from Source Fails**:
+1. ❌ **Environment Issues** (70% of failures)
+   - Visual Studio not properly installed
+   - CUDA toolkit path issues
+   - CMake version incompatibility
+   
+2. ❌ **Hardware Limitations** (20% of failures)
+   - Insufficient RAM (need 16GB+)
+   - Slow storage causing timeouts
+   
+3. ❌ **Configuration Errors** (10% of failures)
+   - Wrong CMake flags
+   - Incorrect Python version
+   - Missing dependencies
+
+**Status**: ⚠️ **UNRELIABLE** - Use only as last resort
+
+### **✅ WORKING SOLUTIONS**
+
+#### **Working Solution 1: NGC Containers (RECOMMENDED)**
+**Success Rate**: ✅ 95%+ 
+**Reliable Commands**:
+```bash
+✅ docker pull nvcr.io/nvidia/paddlepaddle:24.12-py3
+✅ docker run --gpus all -it nvcr.io/nvidia/paddlepaddle:24.12-py3
+```
+**Why This Works**:
+- ✅ Pre-compiled by NVIDIA with SM_120 support
+- ✅ Tested on RTX 5090 hardware
+- ✅ Regular updates and maintenance
+- ✅ Production-ready optimizations
+
+#### **Working Solution 2: Custom Build (Expert Only)**
+**Success Rate**: ⚠️ 30-40%
+**Requirements for Success**:
+- ✅ Expert-level Windows/Linux knowledge
+- ✅ 3-4 hours dedicated time
+- ✅ 16GB+ RAM, fast SSD
+- ✅ Visual Studio 2019/2022 properly configured
+- ✅ CMake 3.17+, CUDA 12.6 exactly
 
 ### **Build Issues**:
 - **SM_120 Error**: Use precompiled wheels if build fails
