@@ -2,6 +2,58 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Build PaddlePaddle GPU เอง (RTX 5090)",
+            "type": "shell",
+            "command": "python build-model-th/build_paddlepaddle_rtx5090_complete.py",
+            "group": "build",
+            "problemMatcher": [],
+            "isBackground": true,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "dedicated"
+            },
+            "detail": "Build PaddlePaddle from source with RTX 5090 SM_120 support - resolves CUDA kernel compatibility issues",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "Test Custom PaddlePaddle Build",
+            "type": "shell",
+            "command": "python -c \"import paddle; print(f'Version: {paddle.__version__}'); print(f'CUDA: {paddle.device.is_compiled_with_cuda()}'); print(f'GPU: {paddle.device.cuda.device_count()}'); print(f'Device: {paddle.device.cuda.get_device_name() if paddle.device.cuda.device_count() > 0 else \"None\"}')\"",
+            "group": "test",
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "detail": "Test custom-built PaddlePaddle with RTX 5090 SM_120 support",
+            "dependsOn": "Build PaddlePaddle GPU เอง (RTX 5090)"
+        },
+        {
+            "label": "Setup Build Environment (RTX 5090)",
+            "type": "shell",
+            "command": "python build-model-th/setup_build_environment.py",
+            "group": "build",
+            "problemMatcher": [],
+            "isBackground": false,
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "detail": "Setup Visual Studio, CMake, CUDA environment for PaddlePaddle build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
             "label": "Install Thai OCR Dependencies",
             "type": "shell",
             "command": "cd build-model-th && python install_dependencies.py",
