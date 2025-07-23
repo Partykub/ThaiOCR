@@ -32,6 +32,60 @@ git clone https://github.com/PaddlePaddle/Paddle.git
 cd Paddle
 git checkout develop  # Latest features for RTX 5090
 
+#### **🔧 Windows Build Commands for RTX 5090:**
+```cmd
+REM 1. Clone PaddlePaddle source (use Developer Command Prompt)
+git clone https://github.com/PaddlePaddle/Paddle.git
+cd Paddle
+git checkout develop
+
+REM 2. Create build directory
+mkdir build
+cd build
+
+REM 3. Configure build with Visual Studio 2022 (or 2019)
+cmake .. ^
+    -G "Visual Studio 17 2022" ^
+    -DWITH_GPU=ON ^
+    -DWITH_PYTHON=ON ^
+    -DWITH_INFERENCE=ON ^
+    -DWITH_AVX=ON ^
+    -DWITH_MKL=OFF ^
+    -DPADDLE_ENABLE_CHECK=ON ^
+    -DPADDLE_WITH_CUDA=ON ^
+    -DCUDA_ARCH_NAME=Manual ^
+    -DCUDA_ARCH_BIN="120" ^
+    -DCMAKE_BUILD_TYPE=Release ^
+    -DPYTHON_EXECUTABLE="C:\Python311\python.exe" ^
+    -DCUDNN_ROOT="C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8"
+
+REM 4. Build with Visual Studio (or use cmake --build)
+cmake --build . --config Release -- /m
+
+REM 5. Install wheel package
+cd python\dist
+pip install paddlepaddle_gpu-*-py3-none-any.whl
+
+REM 6. Verify RTX 5090 detection  
+python -c "import paddle; paddle.utils.run_check()"
+```
+
+#### **📋 Windows Prerequisites:**
+- **OS:** Windows 10/11 (64-bit)
+- **Visual Studio:** 2019/2022 with C++ Desktop Development
+- **Python:** 3.9-3.13 (64-bit, add to PATH)
+- **CMake:** 3.18+ (add to system PATH)
+- **CUDA Toolkit 12.8:** Full Windows installation
+- **CUDA Driver:** 570.xx+ for RTX 5090 support
+- **cuDNN:** Extract to CUDA Toolkit folder
+
+#### **🔧 Linux Build Commands for RTX 5090:**
+```bash
+# 1. Clone PaddlePaddle source
+git clone https://github.com/PaddlePaddle/Paddle.git
+cd Paddle
+git checkout develop  # Latest features for RTX 5090
+
 # 2. Configure build with SM_120 support
 mkdir build && cd build
 cmake .. \
@@ -65,10 +119,11 @@ python -c "import paddle; paddle.utils.run_check()"
 - **Custom configuration** for your specific hardware
 
 #### **⚠️ Build Considerations:**
-- **Build time:** 30-60 minutes depending on CPU
+- **Build time:** 30-60 minutes (Windows), 20-40 minutes (Linux)
 - **Disk space:** ~10GB for source + build artifacts
 - **Memory:** 8GB+ RAM recommended during build
-- **Linux preferred:** Windows builds more complex
+- **Windows complexity:** More dependencies, path management
+- **Linux preferred:** Simpler build process, fewer issues
 
 ### **🎯 CRITICAL FINDINGS: RTX 5090 SM_120 Architecture NOT SUPPORTED** ❌
 
