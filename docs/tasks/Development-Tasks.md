@@ -9,7 +9,66 @@
 | **❌ PaddlePaddle Nightly** | **FAILED** | **Missing SM_120** | **12.8** | **❌ No SM_120** | **✅ Official** |
 | **❌ NGC Container** | **FAILED** | **GPU Access Issues** | **12.0** | **❌ Container Issues** | **✅ NVIDIA** |
 | **⚠️ PyTorch CRNN** | **PARTIAL** | **SM_120 Warning** | **12.1/12.8** | **⚠️ Limited** | **✅ Official** |
-| **🔨 Build from Source** | **UNTESTED** | **Complex Setup** | **12.8** | **❓ Unknown** | **⚠️ Manual** |
+| **🔨 Build from Source** | **⚠️ RECOMMENDED** | **Complex Setup** | **12.8** | **✅ Custom SM_120** | **⚠️ Manual** |
+
+### **🛠️ SOLUTION: Build PaddlePaddle from Source with SM_120 Support**
+
+**✅ RECOMMENDED APPROACH:** Custom build with explicit SM_120 support for RTX 5090
+
+#### **📋 Prerequisites for RTX 5090 Build:**
+- **OS:** Linux (Ubuntu 20.04/22.04 recommended)  
+- **Python:** 3.9-3.13 (64-bit)
+- **GCC/G++:** 8.2.0+
+- **CMake:** 3.18+
+- **CUDA Toolkit 12.8:** Full installation
+- **CUDA Driver:** 570.xx+ for Blackwell SM_120 support
+- **cuDNN:** Compatible with CUDA 12.8
+- **NCCL:** Recommended for multi-GPU performance
+
+#### **🔧 Build Commands for RTX 5090:**
+```bash
+# 1. Clone PaddlePaddle source
+git clone https://github.com/PaddlePaddle/Paddle.git
+cd Paddle
+git checkout develop  # Latest features for RTX 5090
+
+# 2. Configure build with SM_120 support
+mkdir build && cd build
+cmake .. \
+    -DWITH_GPU=ON \
+    -DWITH_PYTHON=ON \
+    -DWITH_CONTRIB=OFF \
+    -DWITH_AVX=ON \
+    -DWITH_MKL=OFF \
+    -DWITH_LITE=OFF \
+    -DWITH_INFERENCE=ON \
+    -DCUDA_ARCH_NAME=Manual \
+    -DCUDA_ARCH_BIN="120" \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DPADDLE_ENABLE_CHECK=ON \
+    -DPADDLE_WITH_CUDA=ON
+
+# 3. Build (use all CPU cores)
+make -j$(nproc)
+
+# 4. Install custom build
+pip install python/dist/paddlepaddle_gpu-*-py3-none-any.whl
+
+# 5. Verify RTX 5090 detection
+python -c "import paddle; paddle.utils.run_check()"
+```
+
+#### **✅ Benefits of Source Build:**
+- **Full SM_120 support** for RTX 5090 architecture
+- **CUDA 12.8 optimization** matching your toolkit
+- **Latest develop branch** with newest features
+- **Custom configuration** for your specific hardware
+
+#### **⚠️ Build Considerations:**
+- **Build time:** 30-60 minutes depending on CPU
+- **Disk space:** ~10GB for source + build artifacts
+- **Memory:** 8GB+ RAM recommended during build
+- **Linux preferred:** Windows builds more complex
 
 ### **🎯 CRITICAL FINDINGS: RTX 5090 SM_120 Architecture NOT SUPPORTED** ❌
 
