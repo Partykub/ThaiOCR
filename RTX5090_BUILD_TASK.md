@@ -101,6 +101,8 @@ Build PaddlePaddle from source code to solve "Mismatched GPU Architecture" error
 **Status: Phase 3 - 100% Complete ✅**
 - ✅ CMake configuration runs successfully
 - ✅ Architecture settings corrected for RTX 5090 SM_120
+- ✅ VERIFIED: build.ninja contains `-gencode arch=compute_120,code=sm_120`
+- ✅ CONFIRMED: No more CUDA architecture 520 references
 - ✅ Ready for Phase 4 build process
 
 ### Phase 4: Build Process
