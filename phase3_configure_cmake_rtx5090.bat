@@ -6,7 +6,8 @@ echo ==========================================
 REM Set environment variables
 set CUDA_PATH=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.8
 set CUDNN_ROOT=%CUDA_PATH%
-set PYTHON_EXECUTABLE=C:\Users\admin\AppData\Local\Programs\Python\Python311\python.exe
+set PYTHON_EXECUTABLE=C:\Users\admin\Documents\paddlepadle\tf_gpu_env\Scripts\python.exe
+set PATH=C:\Users\admin\Documents\paddlepadle\tf_gpu_env\Scripts;%PATH%
 
 REM Pre-flight checks
 echo 🔍 Pre-flight Environment Validation:
@@ -95,8 +96,7 @@ echo.
 
 REM CMake configuration with RTX 5090 specific parameters
 cmake .. ^
-    -G "Visual Studio 17 2022" ^
-    -A x64 ^
+    -G "Ninja" ^
     -DWITH_GPU=ON ^
     -DWITH_PYTHON=ON ^
     -DWITH_INFERENCE=ON ^
@@ -106,14 +106,14 @@ cmake .. ^
     -DPADDLE_WITH_CUDA=ON ^
     -DCUDA_ARCH_NAME=Manual ^
     -DCUDA_ARCH_BIN="120" ^
+    -DCMAKE_CUDA_ARCHITECTURES="120" ^
     -DCMAKE_BUILD_TYPE=Release ^
     -DPYTHON_EXECUTABLE="%PYTHON_EXECUTABLE%" ^
     -DCUDNN_ROOT="%CUDNN_ROOT%" ^
     -DWITH_TESTING=OFF ^
     -DWITH_DISTRIBUTE=OFF ^
     -DWITH_PSCORE=OFF ^
-    -DWITH_UNITY_BUILD=ON ^
-    -DCMAKE_GENERATOR_PLATFORM=x64
+    -DWITH_UNITY_BUILD=ON
 
 echo.
 echo ⏳ CMake configuration in progress...
