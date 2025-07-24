@@ -69,6 +69,32 @@ thai-letters/thai_ocr_dataset/images/*.jpg
 thai-letters/thai_ocr_dataset/images/*.png
 !thai-letters/thai_ocr_dataset/images/.gitkeep
 
+# Phase 1 Dataset Generation - Generated datasets
+thai-letters/phase1_dataset_*/
+thai-letters/thai_dataset_*/
+thai-letters/paddleocr_dataset_*/
+thai-letters/*_dataset_*_*/
+thai-letters/train_data/
+thai-letters/rec_train_data/
+
+# Phase 1 - PaddleOCR Training Format
+thai-letters/train_data/
+thai-letters/val_data/
+thai-letters/rec/
+thai-letters/*.yml
+thai-letters/*.yaml
+!thai-letters/thai_svtr_*.yml
+
+# Phase 1 - Generated Images and Labels  
+*.jpg
+*.png
+*.jpeg
+!sample_*.jpg
+!example_*.png
+labels.txt
+rec_gt_train.txt
+rec_gt_val.txt
+
 # Docker generated files
 src/data/
 thai-letters/thai_dataset_comprehensive_30samples_0722_1551/
